@@ -40,6 +40,17 @@ def login():
   # do contrario, deu certo
 
   # Login
+  user_db = User.query.filter_by(username=username).first()
+  
+  # se não existir esse usuário
+  if not user_db:
+    return jsonify({"message": "Usuario incorreto ou inexistente"}), 400
+  # se a senha não bater
+  if not user_db.password == password:
+    return jsonify({"message": "Senha incorreta"}), 400
+  
+
+  # do contrario, autenticou
   return jsonify({"message": "Autenticação realizada com sucesso"})
 
 # --------------------------------------------------------------------------
