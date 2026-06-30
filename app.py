@@ -42,10 +42,8 @@ def login():
   # Login
   user_db = User.query.filter_by(username=username).first()
   
-  # se não existir esse usuário
   if not user_db:
     return jsonify({"message": "Usuario incorreto ou inexistente"}), 400
-  # se a senha não bater
   if not user_db.password == password:
     return jsonify({"message": "Senha incorreta"}), 400
   
