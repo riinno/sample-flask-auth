@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = "your_secret_key"
 
 # Definindo o caminho para o SQLAlchemy se conetar ao db
-app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///database.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:ADMIN123@127.0.0.1:3306/flask-auth-crud"
 
 login_manager = LoginManager()
 
