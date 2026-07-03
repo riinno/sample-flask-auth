@@ -66,9 +66,9 @@ def logout():
   return jsonify({"message": "Logout realizado com sucesso!"})
 
 # --------------------------------------------------------------------------
-# Rota Create/Register (Cadastro de novos usuarios)
+# Rota Create User (Cadastro de novos usuarios)
 
-@app.route("/register", methods=["POST"])
+@app.route("/user", methods=["POST"])
 def create_user():
   data = request.get_json()
   username = data["username"]
@@ -85,6 +85,21 @@ def create_user():
   db.session.commit()
 
   return jsonify({"message": "Usuario cadastrado com sucesso"})
+
+# --------------------------------------------------------------------------
+# Rota Read User
+
+@app.route("/user/<int:user_id>", methods=["GET"])
+@login_required
+def read_user(user_id):
+  user = User.query.get(user_id)
+
+  # se o user com aquele id não for encontrado, volta erro
+  if not user:
+    return jsonify({"message": "Usuario não encontrado"}), 404
+  
+  # do contrario, retorna as infos do user
+  return jsonify({"username": user.username})
 
 # --------------------------------------------------------------------------
 # Rota Hello World (para testes iniciais)
