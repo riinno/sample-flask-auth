@@ -6,7 +6,7 @@
 from flask import Flask, request, jsonify
 from models.user import User
 from database import db
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 app = Flask(__name__)
 
@@ -123,6 +123,27 @@ def update_user(user_id):
   db.session.commit()
 
   return jsonify({"message": f"Usuario {user_id} atualizado com sucesso"})
+
+# --------------------------------------------------------------------------------------------
+# Rota Delete User
+
+@app.route("/user/<int:user_id>", methods=["DELETE"])
+@login_required
+def delete_user(user_id):
+  # se o user_id for igual ao do usuario que está logado, volta erro
+  if user_id == current_user.id:
+    return jsonify({"message": "Não é possível deletar o usuário logado"}), 400
+
+  user = User.query.get(user_id)
+
+  # se o user com aquele id não for encontrado, volta erro
+  if not user:
+    return jsonify({"message": "Usuario não encontrado"}), 404
+  
+  # do contrario, deleta o user
+  db.session.delete(user)
+  db.session.commit()
+  return jsonify({"message": f"Usuario {user_id} deletado com sucesso"})
 
 # --------------------------------------------------------------------------------------------
 # Rota Hello World (para testes iniciais)
