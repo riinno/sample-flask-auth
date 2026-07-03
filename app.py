@@ -6,7 +6,7 @@
 from flask import Flask, request, jsonify
 from models.user import User
 from database import db
-from flask_login import LoginManager
+from flask_login import LoginManager, login_user
 
 app = Flask(__name__)
 
@@ -22,10 +22,14 @@ login_manager = LoginManager()
 # Inicializando o app de db e login_manager (de database.py) com o 'app.py'
 db.init_app(app)
 login_manager.init_app(app)
-# criar mais tarde o view login
+login_manager.login_view = 'login'
 
 # --------------------------------------------------------------------------
 # Rota Login
+
+@login_manager.user_loader
+def load_user(user_id):
+  return User.query.get(user_id)
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -49,6 +53,7 @@ def login():
   
 
   # do contrario, autenticou
+  login_user(user_db)
   return jsonify({"message": "Autenticação realizada com sucesso"})
 
 # --------------------------------------------------------------------------
