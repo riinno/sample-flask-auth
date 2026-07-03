@@ -1,6 +1,6 @@
 # by Riinno, 2026
 
-# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 #Importação de dependencias e variaveis base
 
 from flask import Flask, request, jsonify
@@ -24,7 +24,7 @@ db.init_app(app)
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 
-# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Rota Login
 
 @login_manager.user_loader
@@ -56,7 +56,7 @@ def login():
   login_user(user_db)
   return jsonify({"message": "Autenticação realizada com sucesso"})
 
-# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Rota Logout
 
 @app.route("/logout", methods=["GET"])
@@ -65,7 +65,7 @@ def logout():
   logout_user()
   return jsonify({"message": "Logout realizado com sucesso!"})
 
-# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Rota Create User (Cadastro de novos usuarios)
 
 @app.route("/user", methods=["POST"])
@@ -86,7 +86,7 @@ def create_user():
 
   return jsonify({"message": "Usuario cadastrado com sucesso"})
 
-# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
 # Rota Read User
 
 @app.route("/user/<int:user_id>", methods=["GET"])
@@ -101,7 +101,30 @@ def read_user(user_id):
   # do contrario, retorna as infos do user
   return jsonify({"username": user.username})
 
-# --------------------------------------------------------------------------
+# --------------------------------------------------------------------------------------------
+# Rota Update User
+
+@app.route("/user/<int:user_id>", methods=["PUT"])
+@login_required
+def update_user(user_id):
+  data = request.get_json()
+  user = User.query.get(user_id)
+
+  # se o user com aquele id não for encontrado, volta erro
+  if not user:
+    return jsonify({"message": "Usuario não encontrado"}), 404
+
+  # se nao existir campo password na request, volta erro
+  if not data.get("password"):
+    return jsonify({"message": "O campo 'password' é obrigatório para atualizar user"}), 400
+  
+  # do contrario, atualiza o user
+  user.password = data["password"]
+  db.session.commit()
+
+  return jsonify({"message": f"Usuario {user_id} atualizado com sucesso"})
+
+# --------------------------------------------------------------------------------------------
 # Rota Hello World (para testes iniciais)
 
 @app.route("/hello-world", methods=["GET"])
