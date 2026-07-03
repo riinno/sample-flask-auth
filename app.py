@@ -6,7 +6,7 @@
 from flask import Flask, request, jsonify
 from models.user import User
 from database import db
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, logout_user, login_required
 
 app = Flask(__name__)
 
@@ -55,6 +55,15 @@ def login():
   # do contrario, autenticou
   login_user(user_db)
   return jsonify({"message": "Autenticação realizada com sucesso"})
+
+# --------------------------------------------------------------------------
+# Rota Logout
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+  logout_user()
+  return jsonify({"message": "Logout realizado com sucesso!"})
 
 # --------------------------------------------------------------------------
 # Rota Hello World (para testes iniciais)
