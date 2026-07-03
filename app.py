@@ -66,6 +66,27 @@ def logout():
   return jsonify({"message": "Logout realizado com sucesso!"})
 
 # --------------------------------------------------------------------------
+# Rota Create/Register (Cadastro de novos usuarios)
+
+@app.route("/register", methods=["POST"])
+def create_user():
+  data = request.get_json()
+  username = data["username"]
+  password = data["password"]
+
+  # se alguma das infos for vazia, volta erro
+  if not username or not password:
+    return jsonify({"message": "Dados inválidos"}), 400
+  
+  # do contrario, cadastra
+  user = User(username=username, password=password)
+  db.session.add(user)
+  
+  db.session.commit()
+
+  return jsonify({"message": "Usuario cadastrado com sucesso"})
+
+# --------------------------------------------------------------------------
 # Rota Hello World (para testes iniciais)
 
 @app.route("/hello-world", methods=["GET"])
