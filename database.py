@@ -1,4 +1,4 @@
-# by Riinno, 2026
+# Code by Riinno, 2026
 
 # -------------------------------------------------------------------------------
 #Importação de dependencias e variaveis base
